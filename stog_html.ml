@@ -593,8 +593,10 @@ let fun_hcode ?(inline=false) ?lang stog _env args code =
   if inline then
     [ Xtmpl.E (("", "span"), [("", "class"), "icode"], [xml_code]) ]
   else
-    [ Xtmpl.E (("", "pre"),
-       [ ("", "class"), Printf.sprintf "code-%s" language], [xml_code])
+    [ Xtmpl.D "\n\n";
+      Xtmpl.E (("", "pre"),
+       [ ("", "class"), Printf.sprintf "code-%s" language], [xml_code]);
+      Xtmpl.D "\n\n";
     ]
 ;;
 

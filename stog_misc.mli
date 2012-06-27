@@ -70,7 +70,6 @@ val file_of_string : file:string -> string -> unit
 val split_string : ?keep_empty:bool -> string -> char list -> string list
 (*/i==v=[String.split_string]=1.1====*)
 
-
 (*i==v=[String.strip_string]=1.0====*)
 (** [strip_string s] removes all leading and trailing spaces from the given string.
 @author Maxence Guesdon

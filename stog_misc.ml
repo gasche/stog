@@ -55,7 +55,6 @@ let strip_string s =
       |	Some last -> String.sub s first ((last-first)+1)
 (*/c==v=[String.strip_string]=1.0====*)
 
-
 let strip_blank_lines str =
   let blank_line = function '\n'|'\r' -> true | _ -> false in
   let prefix, suffix = ref 0, ref 0 in
@@ -68,7 +67,6 @@ let strip_blank_lines str =
   done;
   String.sub str !prefix (len - !suffix - !prefix)
 ;;
-
 
 (*c==v=[Misc.safe_main]=1.0====*)
 let safe_main main =
@@ -315,7 +313,7 @@ let highlight ~opts code =
       let code = string_of_file temp_file in
       Sys.remove code_file;
       Sys.remove temp_file;
-      strip_string code
+      strip_blank_lines code
   | _ ->
       failwith (Printf.sprintf "command failed: %s" com)
 ;;
