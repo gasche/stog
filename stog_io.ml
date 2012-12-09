@@ -190,8 +190,8 @@ let fill_elt_from_atts =
         match h with
         | (("","with-contents"),_) -> elt
         | (("","title"), s) -> { elt with elt_title = s }
-        | (("","keywords"), s) -> { elt with elt_keywords = keywords_of_string s }
-        | (("","topics"), s) -> { elt with elt_topics = topics_of_string s }
+        | (("","keywords"), s) when false -> { elt with elt_keywords = keywords_of_string s }
+        | (("","topics"), s) when false -> { elt with elt_topics = topics_of_string s }
         | (("","date"), s) -> { elt with elt_date = Some (date_of_string s) }
         | (("","published"), s) -> { elt with elt_published = bool_of_string s }
         | (("","sets"), s) -> { elt with elt_sets = sets_of_string s }
