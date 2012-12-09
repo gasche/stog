@@ -748,6 +748,15 @@ let fun_if env args subs =
   | false, [_] -> []
 ;;
 
+let fun_ifdef env args subs =
+  match Xtmpl.get_arg args ("", "var") with
+    | None ->
+      Stog_msg.warning "Ignoring <ifdef> test with no var attribute";
+      []
+    | Some var ->
+      match Xtmpl.env_get ("", var) env with
+        | None -> []
+        | Some _ -> subs
 
 let fun_twocolumns env args subs =
   (*prerr_endline (Printf.sprintf "two-columns, length(subs)=%d" (List.length subs));*)
@@ -1247,6 +1256,7 @@ and build_base_rules stog elt_id elt =
       ("", Stog_tags.hcode), fun_hcode stog ~inline: false ?lang: None;
       ("", Stog_tags.icode), fun_icode ?lang: None stog;
       ("", Stog_tags.if_), fun_if ;
+      ("", Stog_tags.ifdef), fun_ifdef ;
       ("", Stog_tags.image), fun_image ;
       ("", Stog_tags.include_), fun_include stog elt ;
       ("", Stog_tags.latex), (Stog_latex.fun_latex stog) ;

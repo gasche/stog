@@ -60,6 +60,7 @@ val graph : string
 val hcode : string
 val icode : string
 val if_ : string
+val ifdef : string
 val image : string
 val inc : string
 val include_ : string
