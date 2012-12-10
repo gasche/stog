@@ -83,6 +83,36 @@ let get_def =
       Not_found -> None
 ;;
 
+type publication_level =
+  | Hidden
+  | Draft
+  | Published
+
+let publication_level_of_string = function
+  | "false" | "hidden" -> Some Hidden
+  | "draft" -> Some Draft
+  | "true" | "published" -> Some Published
+  | other -> None
+
+let string_of_publication_level = function
+  | Hidden -> "false"
+  | Draft -> "draft"
+  | Published -> "true"
+
+let publication_level_list = [ Hidden; Draft; Published ]
+let publication_level_descr =
+  String.concat ", "
+    (List.map string_of_publication_level publication_level_list)
+
+let lesser_publication_level la lb =
+  let level = function
+    | Hidden -> 0
+    | Draft -> 1
+    | Published -> 2 in
+  level la <= level lb
+
+
+
 module Str_map = Map.Make (struct type t = string let compare = compare end);;
 module Str_set = Set.Make (struct type t = string let compare = compare end);;
 
@@ -94,7 +124,7 @@ type elt =
     elt_title : string ;
     elt_keywords : string list ;
     elt_topics : string list ;
-    elt_published : bool ;
+    elt_published : publication_level ;
     elt_defs : def list ;
     elt_src : string ;
     elt_sets : string list ;
@@ -122,7 +152,7 @@ let make_elt ?(typ="dummy") ?(hid={ hid_path = [] ; hid_absolute = false }) () =
     elt_title = "";
     elt_keywords = [] ;
     elt_topics = [] ;
-    elt_published = true ;
+    elt_published = Published ;
     elt_defs = [] ;
     elt_src = "/tmp" ;
     elt_sets = [] ;
@@ -186,6 +216,7 @@ type stog = {
   stog_files : file_tree ;
   stog_modules : stog_mod Str_map.t ;
   stog_used_mods : Str_set.t ;
+  stog_min_publication_level: publication_level ;
   }
 
 let create_stog dir = {
@@ -210,6 +241,7 @@ let create_stog dir = {
   stog_files = { files = Str_set.empty ; dirs = Str_map.empty } ;
   stog_modules = Str_map.empty ;
   stog_used_mods = Str_set.empty ;
+  stog_min_publication_level = Published ;
   }
 ;;
 

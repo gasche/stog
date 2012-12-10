@@ -279,7 +279,10 @@ let compute stog =
 let remove_not_published stog =
   let (elts, removed) = Stog_tmap.fold
     (fun id elt (acc, removed) ->
-       if elt.elt_published then
+      if
+        lesser_publication_level 
+          stog.stog_min_publication_level elt.elt_published
+      then
          (acc, removed)
        else
          (Stog_tmap.remove acc id, elt.elt_human_id :: removed)

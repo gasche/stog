@@ -41,6 +41,17 @@ type def = Xmlm.name * Xmlm.attribute list * body
 
 val get_def : def list -> Xmlm.name -> (Xmlm.attribute list * body) option
 
+type publication_level = Hidden | Draft | Published
+val publication_level_of_string : string -> publication_level option
+val string_of_publication_level : publication_level -> string
+val publication_level_descr : string
+val lesser_publication_level : publication_level -> publication_level -> bool
+(** If you set your publication level limit for a given Stog rendering to
+   "publish all elements will level Draft or above", you will test for
+   each element that [lesser_publication_level limit_level elt_level]:
+    [limit <= elt_level].
+*)
+
 module Str_map : Map.S with type key = string
 module Str_set : Set.S with type elt = string
 
@@ -52,7 +63,7 @@ type elt = {
   elt_title : string;
   elt_keywords : string list;
   elt_topics : string list;
-  elt_published : bool;
+  elt_published : publication_level;
   elt_defs : def list;
   elt_src : string;
   elt_sets : string list; (** list of sets ("blog", "foo", etc.) this element belongs to *)
@@ -105,6 +116,7 @@ type stog = {
   stog_files : file_tree;
   stog_modules : stog_mod Str_map.t ;
   stog_used_mods : Str_set.t ;
+  stog_min_publication_level : publication_level ;
 }
 val create_stog : string -> stog
 

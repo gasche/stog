@@ -180,7 +180,14 @@ let add_elt stog elt =
   Stog_types.add_elt stog elt
 ;;
 
-
+let fill_publication_level level_str elt =
+  match publication_level_of_string level_str with
+    | Some level -> { elt with elt_published = level }
+    | None ->
+      Stog_msg.warning
+        (Printf.sprintf "Invalid publication level in %s: %S"
+           (string_of_human_id elt.elt_human_id) level_str);
+      elt  
 
 let fill_elt_from_atts =
   let rec iter elt = function
@@ -193,7 +200,7 @@ let fill_elt_from_atts =
         | (("","keywords"), s) when false -> { elt with elt_keywords = keywords_of_string s }
         | (("","topics"), s) when false -> { elt with elt_topics = topics_of_string s }
         | (("","date"), s) -> { elt with elt_date = Some (date_of_string s) }
-        | (("","published"), s) -> { elt with elt_published = bool_of_string s }
+        | (("","published"), s) -> fill_publication_level s elt
         | (("","sets"), s) -> { elt with elt_sets = sets_of_string s }
         | (("","language-dep"), s) -> { elt with elt_lang_dep = bool_of_string s }
         | (("","doctype"), s) -> { elt with elt_xml_doctype = Some s }
@@ -217,7 +224,7 @@ let fill_elt_from_nodes =
         | ("", "keywords") -> { elt with elt_keywords = keywords_of_string v }
         | ("", "topics") -> { elt with elt_topics = topics_of_string v }
         | ("", "date") -> { elt with elt_date = Some (date_of_string v) }
-        | ("", "published") -> { elt with elt_published = bool_of_string v }
+        | ("", "published") -> fill_publication_level v elt
         | ("", "sets") -> { elt with elt_sets = sets_of_string v }
         | ("", "language-dep") -> { elt with elt_lang_dep = bool_of_string v }
         | ("", "doctype") -> { elt with elt_xml_doctype = Some v }

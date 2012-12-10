@@ -39,6 +39,14 @@ let plugins = ref [];;
 let packages = ref [];;
 let only_elt = ref None;;
 
+let min_publication_level = ref None
+
+let set_publication_level s =
+  match Stog_types.publication_level_of_string s with
+    | Some lev -> min_publication_level := Some lev
+    | None ->
+      Stog_msg.error (Printf.sprintf "Invalid publication level option %S" s)
+
 let set_stog_options stog =
   let stog =
     match !site_url with
@@ -54,6 +62,11 @@ let set_stog_options stog =
     match !lang with
       None -> stog
     | Some s -> { stog with Stog_types.stog_lang = Some s }
+  in
+  let stog =
+    match !min_publication_level with
+      None -> stog
+    | Some lev -> { stog with Stog_types.stog_min_publication_level = lev }
   in
   let stog = { stog with Stog_types.stog_outdir = !output_dir } in
   stog
@@ -81,6 +94,10 @@ let options = [
 
     "--default-lang", Arg.String (fun s -> default_lang_to_set := Some s),
     "<lang> use <lang> as default language (dates, ...); default is \"en\"" ;
+
+    "--publication-level", Arg.String set_publication_level,
+    (Printf.sprintf "<level> use <level> (%s) as minimum publication level"
+       Stog_types.publication_level_descr);
 
     "--plugin", Arg.String (fun s -> plugins := !plugins @ [s]),
     "<file> load plugin (ocaml object file)" ;
@@ -119,11 +136,12 @@ let main () =
         (*prerr_endline "directories read";*)
         let stog = Stog_types.merge_stogs stogs in
         (*prerr_endline "directories merged";*)
+        let stog = set_stog_options stog in
+        (* prerr_endline "options read"; *)
         let stog = Stog_info.remove_not_published stog in
         (*prerr_endline "removed not published articles";*)
         let stog = Stog_info.compute stog in
         (*prerr_endline "graph computed";*)
-        let stog = set_stog_options stog in
         Stog_html.generate ~use_cache: !use_cache ?only_elt: !only_elt stog
   end;
   let err = Stog_msg.errors () in
