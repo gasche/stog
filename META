@@ -1,6 +1,6 @@
 version = "1.0"
 description = "Stog"
-requires = "pcre,xtmpl,rss,xmlm"
+requires = "xtmpl,rss,xmlm"
 archive(byte) = "stog.cma"
 archive(native) = "stog.cmxa"
 
