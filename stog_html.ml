@@ -1323,7 +1323,6 @@ and elt_list ?rss ?set stog env args _ =
     | _ ->
         report_error ("Error while processing " ^ name);
         assert false
-    | xmls -> Xtmpl.E (("", "toto"), [], xmls)
   in
   let xml = List.map f_elt elts in
   (*prerr_endline "elt_list:";
