@@ -1130,12 +1130,16 @@ let rec elt_to_rss_item stog elt_id elt =
     let id = get_in_env env ("", "rss-id") in
     if id <> "" then id else link
   in
+  let author =
+    let author = get_in_env env ("", "author") in
+    if author = "" then None else Some author in
   let desc = String.concat "" (List.map Xtmpl.string_of_xml desc_xml) in
   Rss.item ~title: elt.elt_title
   ~desc
   ~link
   ~pubdate
   ~cats
+  ?author
   ~guid: { Rss.guid_name = guid ; guid_permalink = true }
   ()
 
